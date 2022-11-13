@@ -19,7 +19,8 @@ ifeq ($(shell uname -s),Linux)
 endif
 
 tts:
-	$(CC) $(CFLAGS) -c $@.c $(INCLUDE_FLAGS) -o $(BUILD_DIRECTORY)/$@.o
+	$(CC) $(CFLAGS) -c $@.c $(INCLUDE_FLAGS) -o $(BUILD_DIRECTORY)/$@.o -Wno-implicit-function-declaration -Wno-int-conversion
 	$(CC) $(CFLAGS) -shared $(BUILD_DIRECTORY)/$@.o $(LDFLAGS) $(LIBS) -o $(BUILD_DIRECTORY)/lib$@.$(DLL_SUFFIX)
+	rm -r $(BUILD_DIRECTORY)/$@.o
 clean:
-	rm -r $(BUILD_DIRECTORY)/tts.o $(BUILD_DIRECTORY)/libtts.$(DLL_SUFFIX)
+	rm -r $(BUILD_DIRECTORY)/libtts.$(DLL_SUFFIX)
