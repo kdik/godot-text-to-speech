@@ -6,7 +6,7 @@ This plugin was originally developed for use in [Strange Aeons](https://store.st
 
 ## Instructions
 
-Once installed the node types **TextToSpeech**, **TextToSpeech2D** & **TextToSpeech3D** should appear in the Godot engine. Add one of them to your scene and use the example below as a guideline.
+Once the plugin is installed and enabled the node types **TextToSpeech**, **TextToSpeech2D** & **TextToSpeech3D** should appear in the Godot engine. Add one of them to your scene and use the example below as a guideline.
 
 ## Example
 
