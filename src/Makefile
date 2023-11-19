@@ -10,7 +10,7 @@ BUILD_DIRECTORY=../addons/texttospeech/lib/$(OS_NAME)
 CC=gcc
 INCLUDE_FLAGS=-I../include/godot_headers -I../include/flite
 LDFLAGS=-L../lib/$(OS_NAME)
-LIBS=-lflite_cmu_us_awb -lflite_cmu_us_kal -lflite_cmu_us_kal16 -lflite_cmu_us_slt -lflite_usenglish -lflite_cmulex -lflite -lm
+LIBS=-lflite_usenglish -lflite_cmulex -lflite -lm
 ifeq ($(OS),Windows_NT)
   LIBS+= -lwinmm
 endif

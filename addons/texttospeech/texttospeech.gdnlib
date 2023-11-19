@@ -7,10 +7,10 @@ reloadable=true
 
 [entry]
 
-X11.64="res://addons/texttospeech/lib/linux/libtts.so"
 Windows.64="res://addons/texttospeech/lib/win32/libtts.dll"
+X11.64="res://addons/texttospeech/lib/linux/libtts.so"
 
 [dependencies]
 
-Windows.64=[  ]
-X11.64=[  ]
+Windows.64=[ "res://addons/texttospeech/voices/cmu_us_aew.flitevox", "res://addons/texttospeech/voices/cmu_us_ahw.flitevox", "res://addons/texttospeech/voices/cmu_us_awb.flitevox", "res://addons/texttospeech/voices/cmu_us_clb.flitevox", "res://addons/texttospeech/voices/cmu_us_eey.flitevox", "res://addons/texttospeech/voices/cmu_us_fem.flitevox", "res://addons/texttospeech/voices/cmu_us_slp.flitevox", "res://addons/texttospeech/voices/cmu_us_slt.flitevox" ]
+X11.64=[ "res://addons/texttospeech/voices/cmu_us_aew.flitevox", "res://addons/texttospeech/voices/cmu_us_ahw.flitevox", "res://addons/texttospeech/voices/cmu_us_awb.flitevox", "res://addons/texttospeech/voices/cmu_us_clb.flitevox", "res://addons/texttospeech/voices/cmu_us_eey.flitevox", "res://addons/texttospeech/voices/cmu_us_fem.flitevox", "res://addons/texttospeech/voices/cmu_us_slp.flitevox", "res://addons/texttospeech/voices/cmu_us_slt.flitevox" ]
