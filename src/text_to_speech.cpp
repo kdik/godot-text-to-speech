@@ -26,6 +26,11 @@ TextToSpeech::~TextToSpeech() {
 }
 
 Error TextToSpeech::set_voice_path(const String &p_path) {
+    if (current_voice) {
+        delete_voice(current_voice); // Flite API frees memory
+        current_voice = nullptr;
+    }
+
     std::string path = p_path.utf8().get_data();
 
     cst_voice *v = flite_voice_load(path.c_str());
@@ -64,9 +69,6 @@ PackedByteArray TextToSpeech::speak_to_buffer(const String &p_text) {
     sample_rate = wave->sample_rate;
     delete_wave(wave);
 
-    // 🔔 Notify GDScript that synthesis finished
-    emit_completed();
-
     return buffer;
 }
 
@@ -80,8 +82,4 @@ void TextToSpeech::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_sample_rate"), &TextToSpeech::get_sample_rate);
 
     ADD_SIGNAL(MethodInfo("completed"));
-}
-
-void TextToSpeech::emit_completed() {
-    emit_signal("completed");
 }

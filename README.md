@@ -38,6 +38,7 @@ Linux:
 Windows:
 
 - Install MSYS2 https://www.msys2.org/
+- run MSYS2 MINGW64
 - pacman -Syu
 - pacman -S git cmake make mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-python
 - cd build

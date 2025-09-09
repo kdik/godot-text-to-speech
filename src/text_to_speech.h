@@ -30,8 +30,6 @@ public:
 
     // Get sample rate of last synthesis
     int get_sample_rate() const;
-
-    void emit_completed();
 };
 
 #endif // TEXT_TO_SPEECH_H
