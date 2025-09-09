@@ -65,9 +65,3 @@ int flite_synth_to_pcm(const char *text_utf8, short **out_pcm, size_t *out_sampl
 
     return 0;
 }
-
-void flite_cleanup() {
-    // Flite doesn't provide an API to free voice pointers across all versions, so we just null it.
-    g_voice = NULL;
-    // no more cleanup for flite internals here
-}
