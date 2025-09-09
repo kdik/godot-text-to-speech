@@ -37,8 +37,12 @@ Linux:
 
 Windows:
 
-- Install MinGW-w64 on your system
-- Run `mingw32-make` in the src directory
+- Install MSYS2 https://www.msys2.org/
+- pacman -Syu
+- pacman -S git cmake make mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-python
+- cd build
+- cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+- cmake --build . -j$(nproc)
 
 ## Known issues
 
