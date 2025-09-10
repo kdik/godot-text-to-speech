@@ -80,6 +80,4 @@ void TextToSpeech::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_voice_path", "path"), &TextToSpeech::set_voice_path);
     ClassDB::bind_method(D_METHOD("speak_to_buffer", "text"), &TextToSpeech::speak_to_buffer);
     ClassDB::bind_method(D_METHOD("get_sample_rate"), &TextToSpeech::get_sample_rate);
-
-    ADD_SIGNAL(MethodInfo("completed"));
 }
