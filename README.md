@@ -6,11 +6,9 @@ This plugin was originally developed for use in [Strange Aeons](https://store.st
 
 ## Instructions
 
-Once the plugin is installed and enabled the node types **TextToSpeech**, **TextToSpeech2D** & **TextToSpeech3D** should appear in the Godot engine. Add one of them to your scene and use the example below as a guideline.
+Once the plugin is installed the node types **TextToSpeech1D**, **TextToSpeech2D** & **TextToSpeech3D** should appear in the Godot engine. Add one of them to your scene and use the example below as a guideline.
 
 ## Example
-
-In the example project shown below the the phrase `Text to speech is a really neat thing.` is said upon launch in all the available voices.
 
 ![Example project structure](images/example.png)
 
@@ -18,28 +16,42 @@ In the example project shown below the the phrase `Text to speech is a really ne
 extends Node2D
 
 func _ready():
-    var text = "Text to speech is a really neat thing."
-    var speed = 0.9
-    yield($TextToSpeech.say(text, TextToSpeechEngine.VOICE_AWB, speed), "completed")
-    yield($TextToSpeech.say(text, TextToSpeechEngine.VOICE_AHW, speed), "completed")
-    yield($TextToSpeech.say(text, TextToSpeechEngine.VOICE_FEM, speed), "completed")
-    yield($TextToSpeech.say(text, TextToSpeechEngine.VOICE_AEW, speed), "completed")
-    yield($TextToSpeech.say(text, TextToSpeechEngine.VOICE_SLT, speed), "completed")
-    yield($TextToSpeech.say(text, TextToSpeechEngine.VOICE_EEY, speed), "completed")
-    yield($TextToSpeech.say(text, TextToSpeechEngine.VOICE_CLB, speed), "completed")
+	await $TextToSpeech1.say("Text to speech is a really neat thing.")
+	await $TextToSpeech2.say("We can also speak in different voices.", "cmu_us_slt")
+	await $TextToSpeech1.say("And slower too.", "cmu_us_awb", 0.75)
+	$TextToSpeech1.say("And we can both speak at the same time.", "cmu_us_fem")
+	$TextToSpeech2.say("And we can both speak at the same time.", "cmu_us_eey")
 ```
 
-## Compilation instructions
+## Keep in mind
 
-Linux:
+- The current implementation is intended to have a small number of **TextToSpeech1D/2D/3D** nodes as the dynamic library and the voice file is loaded for each instance
+- Voices for this text to speech plugin are located under **addons/text_to_speech/voices/**. The voices are .flitevox voices renamed to .flitevox.res to be treated by Godot as resources. Additional voices can be added to this directory and used with this plugin.
+- It is a good practice to only keep the voices you use in the game, as all .flitevox.res files in the directory are shipped with the game and extracted to **user://** at runtime.
 
-- Run `make` in the src directory
+## Build prerequisites
 
 Windows:
 
-- Install MinGW-w64 on your system
-- Run `mingw32-make` in the src directory
+- Install MSYS2 https://www.msys2.org/
+- run MSYS2 MINGW64
+- pacman -Syu
+- pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-python
 
-## Known issues
+## Build instructions
 
-- The current implementation is intended to have a small (optimally one) **TextToSpeech** node in the scene as the dynamic library is loaded for each instance
+Linux:
+
+- git submodule update --init --recursive
+- mkdir -p build
+- cd build
+- cmake .. -DCMAKE_BUILD_TYPE=Release
+- cmake --build . -j$(nproc)
+
+Windows:
+
+- git submodule update --init --recursive
+- mkdir -p build
+- cd build
+- cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+- cmake --build . -j$(nproc)
