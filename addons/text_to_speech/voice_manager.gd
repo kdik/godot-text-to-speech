@@ -4,13 +4,16 @@ class_name VoiceManager
 const VOICE_DIR_RES := "res://addons/text_to_speech/voices"
 const VOICE_DIR_USER := "user://voices"
 
+static var _voice_offloading_started := false
+
 func ensure_voices_installed() -> void:
-	var voices_dir := "res://addons/text_to_speech/voices"
-	var user_dir := "user://voices"
+	if _voice_offloading_started:
+		return
+	_voice_offloading_started = true
+	
+	DirAccess.make_dir_recursive_absolute(VOICE_DIR_USER)
 
-	DirAccess.make_dir_recursive_absolute(user_dir)
-
-	var d = DirAccess.open(voices_dir)
+	var d = DirAccess.open(VOICE_DIR_RES)
 	if not d:
 		return
 
@@ -18,8 +21,8 @@ func ensure_voices_installed() -> void:
 	var fname = d.get_next()
 	while fname != "":
 		if not d.current_is_dir() and fname.ends_with(".flitevox.res"):
-			var src : String = voices_dir + "/" + fname
-			var dst : String = user_dir + "/" + fname
+			var src : String = VOICE_DIR_RES + "/" + fname
+			var dst : String = VOICE_DIR_USER + "/" + fname
 			if not FileAccess.file_exists(dst):
 				var bytes = FileAccess.get_file_as_bytes(src)
 				var f = FileAccess.open(dst, FileAccess.WRITE)
@@ -28,8 +31,15 @@ func ensure_voices_installed() -> void:
 					f.close()
 		fname = d.get_next()
 	d.list_dir_end()
+	
+func wait_for_voice(voice_path: String, timeout_sec := 5.0) -> void:
+	var elapsed := 0.0
+	await Engine.get_main_loop().process_frame
+	while not FileAccess.file_exists(voice_path) and elapsed < timeout_sec:
+		await Engine.get_main_loop().process_frame
+		elapsed += 1.0 / ProjectSettings.get_setting("display/window/handheld/fps", 60.0)
+	if not FileAccess.file_exists(voice_path):
+		push_warning("Voice file not found after wait: " + voice_path)
 
-## Get absolute path to a given voice
-func get_voice_path(voice_file: String) -> String:
-	var abs_path = ProjectSettings.globalize_path(VOICE_DIR_USER + "/" + voice_file)
-	return abs_path
+func get_voice_path(voice_name: String) -> String:
+	return ProjectSettings.globalize_path(VOICE_DIR_USER + "/" + voice_name + ".flitevox.res")

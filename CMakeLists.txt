@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.19)
 project(godot_text_to_speech LANGUAGES CXX C)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(GODOT_CPP_DIR "${CMAKE_SOURCE_DIR}/extern/godot-cpp")
-
-if(NOT EXISTS ${GODOT_CPP_DIR})
-    message(FATAL_ERROR "GODOT_CPP_DIR (${GODOT_CPP_DIR}) does not exist. Edit CMakeLists.txt to point to your godot-cpp.")
-endif()
 
 add_subdirectory(${GODOT_CPP_DIR} ${CMAKE_BINARY_DIR}/godot-cpp EXCLUDE_FROM_ALL)
 
@@ -23,14 +23,13 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${GODOT_CPP_DIR}/include
     ${GODOT_CPP_DIR}/include/core
     ${CMAKE_CURRENT_SOURCE_DIR}/flite
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/flite
+    ${CMAKE_CURRENT_SOURCE_DIR}/flite/include
 )
 
-
 if(WIN32)
-set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/lib/win)
+    set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/flite/lib/win)
 elseif(UNIX)
-set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/lib/linux)
+    set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/flite/lib/linux)
 endif()
 
 set(FLITE_LIBS
@@ -49,7 +48,7 @@ if(WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         godot-cpp
         -Wl,--whole-archive ${FLITE_LIBS} -Wl,--no-whole-archive
-        winmm   # must come AFTER flite libs
+        winmm
         m
     )
 elseif(UNIX)

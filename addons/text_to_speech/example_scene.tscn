@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dgk8txl1y4n0r"]
+
+[ext_resource type="Script" uid="uid://bnx0j4dlcf0sh" path="res://addons/text_to_speech/example.gd" id="1_w1whx"]
+[ext_resource type="Script" uid="uid://0to2hc8t3nd4" path="res://addons/text_to_speech/text_to_speech_2d.gd" id="2_haihx"]
+
+[node name="Example" type="Node2D"]
+script = ExtResource("1_w1whx")
+
+[node name="TextToSpeech1" type="AudioStreamPlayer2D" parent="."]
+script = ExtResource("2_haihx")
+metadata/_custom_type_script = "uid://0to2hc8t3nd4"
+
+[node name="TextToSpeech2" type="AudioStreamPlayer2D" parent="."]
+script = ExtResource("2_haihx")
+metadata/_custom_type_script = "uid://0to2hc8t3nd4"

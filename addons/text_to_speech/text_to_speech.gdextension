@@ -6,7 +6,7 @@ reloadable = true
 
 [libraries]
 
-linux.debug.x86_64 = "res://addons/text_to_speech/libgodot_text_to_speech.so"
-linux.release.x86_64 = "res://addons/text_to_speech/libgodot_text_to_speech.so"
-windows.debug.x86_64 = "res://addons/text_to_speech/libgodot_text_to_speech.dll"
-windows.release.x86_64 = "res://addons/text_to_speech/libgodot_text_to_speech.dll"
+linux.debug.x86_64 = "res://addons/text_to_speech/lib/linux/libgodot_text_to_speech.so"
+linux.release.x86_64 = "res://addons/text_to_speech/lib/linux/libgodot_text_to_speech.so"
+windows.debug.x86_64 = "res://addons/text_to_speech/lib/win/libgodot_text_to_speech.dll"
+windows.release.x86_64 = "res://addons/text_to_speech/lib/win/libgodot_text_to_speech.dll"

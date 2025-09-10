@@ -3,5 +3,10 @@
 class_name TextToSpeech1D
 extends AudioStreamPlayer
 
-func say(text, voice_id = "cmu_us_aew.flitevox.res", speed = 1.0) -> Signal:
-	return await TextToSpeechEngine.get_singleton().say(self, text, voice_id, speed)
+var text_to_speech_engine : TextToSpeechEngine
+
+func _ready() -> void:
+	text_to_speech_engine = TextToSpeechEngine.new()
+
+func say(text, voice = "cmu_us_aew", speed = 1.0) -> void:
+	await text_to_speech_engine.say(self, text, voice, speed)

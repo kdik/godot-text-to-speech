@@ -21,7 +21,6 @@ GDExtensionBool GDE_EXPORT gdextension_text_to_speech_init(
 
     init_obj.register_terminator([](ModuleInitializationLevel p_level) {
         if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-            // Cleanup if needed
         }
     });
 
