@@ -1,4 +1,4 @@
-@icon("res://addons/text_to_speech/icon.png")
+@icon("res://addons/text_to_speech/icon_1d.png")
 
 class_name TextToSpeech1D
 extends AudioStreamPlayer

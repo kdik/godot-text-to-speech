@@ -11,6 +11,9 @@ func ensure_voices_installed() -> void:
 		return
 	_voice_offloading_started = true
 	
+	if OS.has_feature("editor"):
+		return
+	
 	DirAccess.make_dir_recursive_absolute(VOICE_DIR_USER)
 
 	var d = DirAccess.open(VOICE_DIR_RES)
@@ -41,5 +44,9 @@ func wait_for_voice(voice_path: String, timeout_sec := 5.0) -> void:
 	if not FileAccess.file_exists(voice_path):
 		push_warning("Voice file not found after wait: " + voice_path)
 
+# Flite cannot read voice files from .pck, so in an exported game the voices are extracted from the .pck to user://
 func get_voice_path(voice_name: String) -> String:
-	return ProjectSettings.globalize_path(VOICE_DIR_USER + "/" + voice_name + ".flitevox.res")
+	if OS.has_feature("editor"):
+		return ProjectSettings.globalize_path(VOICE_DIR_RES + "/" + voice_name + ".flitevox.res")
+	else:
+		return ProjectSettings.globalize_path(VOICE_DIR_USER + "/" + voice_name + ".flitevox.res")
