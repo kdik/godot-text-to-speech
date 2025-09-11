@@ -31,6 +31,12 @@ func _ready():
 
 ## Build prerequisites
 
+Linux:
+
+- sudo apt update
+- sudo apt upgrade -y
+- sudo apt install build-essential cmake git python3
+
 Windows:
 
 - Install MSYS2 https://www.msys2.org/
