@@ -61,3 +61,11 @@ Windows:
 - cd build
 - cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
 - cmake --build . -j$(nproc)
+
+Macos:
+
+- git submodule update --init --recursive
+- mkdir -p build
+- cd build
+- cmake .. -DCMAKE_BUILD_TYPE=Release
+- cmake --build . -j$(sysctl -n hw.logicalcpu)

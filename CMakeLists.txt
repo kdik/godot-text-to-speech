@@ -28,8 +28,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 if(WIN32)
     set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/flite/lib/win)
-elseif(UNIX)
+elseif(LINUX)
     set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/flite/lib/linux)
+elseif(APPLE)
+    set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/flite/lib/apple)
 endif()
 
 set(FLITE_LIBS
@@ -51,11 +53,18 @@ if(WIN32)
         winmm
         m
     )
-elseif(UNIX)
+elseif(LINUX)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         godot-cpp
         -Wl,--whole-archive ${FLITE_LIBS} -Wl,--no-whole-archive
         m
     )
+elseif(APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        godot-cpp
+        -Wl,-force_load ${FLITE_LIBS} -Wl
+        m
+    )
+
 endif()
 
