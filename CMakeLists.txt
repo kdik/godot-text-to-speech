@@ -9,29 +9,26 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(GODOT_CPP_DIR "${CMAKE_SOURCE_DIR}/extern/godot-cpp")
+set(FLITE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/flite")
+set(FLITE_BUILD_SOURCE_DIR "${CMAKE_BINARY_DIR}/flite-src")
+set(FLITE_BUILD_DIR "${CMAKE_BINARY_DIR}/flite")
 
 add_subdirectory(${GODOT_CPP_DIR} ${CMAKE_BINARY_DIR}/godot-cpp EXCLUDE_FROM_ALL)
 
-add_library(${PROJECT_NAME} SHARED
-    src/text_to_speech.cpp
-    src/text_to_speech.h
-    src/register_types.cpp
-    flite/flite_wrapper.c
-)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${GODOT_CPP_DIR}/include
-    ${GODOT_CPP_DIR}/include/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/flite
-    ${CMAKE_CURRENT_SOURCE_DIR}/flite/include
-)
-
-if(WIN32)
-    set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/flite/lib/win)
-elseif(UNIX)
-    set(FLITE_LIB_DIR ${CMAKE_SOURCE_DIR}/flite/lib/linux)
+if(NOT EXISTS "${FLITE_SOURCE_DIR}/configure")
+    message(FATAL_ERROR "Flite submodule is missing. Run: git submodule update --init --recursive")
 endif()
 
+if(MSVC)
+    message(FATAL_ERROR "Building Flite from source is supported with GCC/Clang toolchains. On Windows, use MSYS2 MinGW.")
+endif()
+
+find_program(FLITE_SHELL NAMES sh bash REQUIRED)
+find_program(FLITE_MAKE NAMES mingw32-make make gmake REQUIRED)
+
+include(ExternalProject)
+
+set(FLITE_LIB_DIR "${FLITE_BUILD_DIR}/lib")
 set(FLITE_LIBS
     ${FLITE_LIB_DIR}/libflite.a
     ${FLITE_LIB_DIR}/libflite_usenglish.a
@@ -42,6 +39,52 @@ set(FLITE_LIBS
     ${FLITE_LIB_DIR}/libflite_cmu_indic_lang.a
     ${FLITE_LIB_DIR}/libflite_cmu_indic_lex.a
 )
+
+ExternalProject_Add(flite_external
+    PREFIX ${CMAKE_BINARY_DIR}/flite-external
+    SOURCE_DIR ${FLITE_BUILD_SOURCE_DIR}
+    DOWNLOAD_COMMAND ${CMAKE_COMMAND} -E copy_directory ${FLITE_SOURCE_DIR} ${FLITE_BUILD_SOURCE_DIR}
+    UPDATE_COMMAND ${CMAKE_COMMAND} -E copy_directory ${FLITE_SOURCE_DIR} ${FLITE_BUILD_SOURCE_DIR}
+    CONFIGURE_COMMAND
+        ${CMAKE_COMMAND} -E env
+            "CC=${CMAKE_C_COMPILER}"
+            "AR=${CMAKE_AR}"
+            "RANLIB=${CMAKE_RANLIB}"
+            "CFLAGS=-O2 -fPIC"
+            ${FLITE_SHELL} ./configure --disable-shared --with-audio=none
+    BUILD_COMMAND
+        ${FLITE_MAKE} "BUILDDIR=${FLITE_BUILD_DIR}" -j
+    BUILD_IN_SOURCE 1
+    INSTALL_COMMAND ""
+    BUILD_BYPRODUCTS ${FLITE_LIBS}
+)
+
+add_library(${PROJECT_NAME} SHARED
+    src/text_to_speech.cpp
+    src/text_to_speech.h
+    src/register_types.cpp
+    src/flite_wrapper.c
+)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${GODOT_CPP_DIR}/include
+    ${GODOT_CPP_DIR}/include/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${FLITE_SOURCE_DIR}/include
+)
+
+if(WIN32)
+    set(GODOT_PLUGIN_LIB_DIR "${CMAKE_SOURCE_DIR}/addons/text_to_speech/lib/win")
+else()
+    set(GODOT_PLUGIN_LIB_DIR "${CMAKE_SOURCE_DIR}/addons/text_to_speech/lib/linux")
+endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${GODOT_PLUGIN_LIB_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY "${GODOT_PLUGIN_LIB_DIR}"
+)
+
+add_dependencies(${PROJECT_NAME} flite_external)
 
 if(WIN32)
     # Force inclusion of static libs into DLL
@@ -58,4 +101,3 @@ elseif(UNIX)
         m
     )
 endif()
-
