@@ -11,7 +11,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(GODOT_CPP_DIR "${CMAKE_SOURCE_DIR}/extern/godot-cpp")
 set(FLITE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/flite")
 set(FLITE_BUILD_SOURCE_DIR "${CMAKE_BINARY_DIR}/flite-src")
-set(FLITE_BUILD_DIR "${CMAKE_BINARY_DIR}/flite")
 
 add_subdirectory(${GODOT_CPP_DIR} ${CMAKE_BINARY_DIR}/godot-cpp EXCLUDE_FROM_ALL)
 
@@ -28,6 +27,13 @@ find_program(FLITE_MAKE NAMES mingw32-make make gmake REQUIRED)
 
 include(ExternalProject)
 
+if(WIN32)
+    set(FLITE_TARGET_PLATFORM "x86_64-mingw32")
+else()
+    set(FLITE_TARGET_PLATFORM "x86_64-linux-gnu")
+endif()
+
+set(FLITE_BUILD_DIR "${FLITE_BUILD_SOURCE_DIR}/build/${FLITE_TARGET_PLATFORM}")
 set(FLITE_LIB_DIR "${FLITE_BUILD_DIR}/lib")
 set(FLITE_LIBS
     ${FLITE_LIB_DIR}/libflite.a
@@ -53,7 +59,7 @@ ExternalProject_Add(flite_external
             "CFLAGS=-O2 -fPIC"
             ${FLITE_SHELL} ./configure --disable-shared --with-audio=none
     BUILD_COMMAND
-        ${FLITE_MAKE} "BUILDDIR=${FLITE_BUILD_DIR}" -j
+        ${FLITE_MAKE} -j1
     BUILD_IN_SOURCE 1
     INSTALL_COMMAND ""
     BUILD_BYPRODUCTS ${FLITE_LIBS}
