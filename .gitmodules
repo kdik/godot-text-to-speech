@@ -2,3 +2,6 @@
 	path = extern/godot-cpp
 	url = https://github.com/godotengine/godot-cpp
 	branch = 4.4
+[submodule "flite"]
+	path = flite
+	url = https://github.com/festvox/flite.git
