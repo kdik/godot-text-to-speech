@@ -61,7 +61,3 @@ Windows:
 - cd build
 - cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
 - cmake --build . -j$(nproc)
-
-The build compiles Flite from the `flite` submodule and links the resulting static libraries into the Godot GDExtension. The generated plugin library is written to `addons/text_to_speech/lib/<platform>/`.
-
-GitHub Actions builds Linux and Windows artifacts on every push and pull request.
