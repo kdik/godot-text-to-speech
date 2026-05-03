@@ -44,6 +44,11 @@ Windows:
 - pacman -Syu
 - pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-pkg-config mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-python
 
+macOS:
+
+- Install Xcode Command Line Tools
+- Install CMake
+
 ## Build instructions
 
 Linux:
@@ -61,3 +66,11 @@ Windows:
 - cd build
 - cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
 - cmake --build . -j$(nproc)
+
+macOS:
+
+- git submodule update --init --recursive
+- mkdir -p build
+- cd build
+- cmake .. -DCMAKE_BUILD_TYPE=Release
+- cmake --build . -j$(sysctl -n hw.logicalcpu)

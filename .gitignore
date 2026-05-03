@@ -11,7 +11,6 @@ mono_crash.*.json
 build/
 Makefile
 .import
-addons/text_to_speech/lib/
 flite/bin/
 flite/build/
 flite/config/config
