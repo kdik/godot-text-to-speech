@@ -27,10 +27,30 @@ find_program(FLITE_MAKE NAMES mingw32-make make gmake REQUIRED)
 
 include(ExternalProject)
 
-if(WIN32)
+if(APPLE)
+    if(CMAKE_OSX_ARCHITECTURES)
+        list(GET CMAKE_OSX_ARCHITECTURES 0 FLITE_TARGET_CPU)
+    else()
+        set(FLITE_TARGET_CPU "${CMAKE_SYSTEM_PROCESSOR}")
+    endif()
+
+    if(FLITE_TARGET_CPU MATCHES "^(arm64|aarch64)$")
+        set(GODOT_MACOS_ARCH "arm64")
+        set(FLITE_TARGET_CPU "aarch64")
+    else()
+        set(GODOT_MACOS_ARCH "x86_64")
+        set(FLITE_TARGET_CPU "x86_64")
+    endif()
+
+    set(FLITE_TARGET_PLATFORM "${FLITE_TARGET_CPU}-darwin")
+    set(FLITE_CONFIGURE_HOST "${FLITE_TARGET_CPU}-apple-darwin")
+    set(FLITE_CONFIGURE_ARGS --host=${FLITE_CONFIGURE_HOST} --disable-shared --with-audio=none)
+elseif(WIN32)
     set(FLITE_TARGET_PLATFORM "x86_64-mingw32")
+    set(FLITE_CONFIGURE_ARGS --disable-shared --with-audio=none)
 else()
     set(FLITE_TARGET_PLATFORM "x86_64-linux-gnu")
+    set(FLITE_CONFIGURE_ARGS --disable-shared --with-audio=none)
 endif()
 
 set(FLITE_BUILD_DIR "${FLITE_BUILD_SOURCE_DIR}/build/${FLITE_TARGET_PLATFORM}")
@@ -57,7 +77,7 @@ ExternalProject_Add(flite_external
             "AR=${CMAKE_AR}"
             "RANLIB=${CMAKE_RANLIB}"
             "CFLAGS=-O2 -fPIC"
-            ${FLITE_SHELL} ./configure --disable-shared --with-audio=none
+            ${FLITE_SHELL} ./configure ${FLITE_CONFIGURE_ARGS}
     BUILD_COMMAND
         ${FLITE_MAKE} -j1
     BUILD_IN_SOURCE 1
@@ -79,10 +99,18 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${FLITE_SOURCE_DIR}/include
 )
 
-if(WIN32)
+if(APPLE)
+    set(GODOT_PLUGIN_LIB_DIR "${CMAKE_SOURCE_DIR}/addons/text_to_speech/lib/macos")
+elseif(WIN32)
     set(GODOT_PLUGIN_LIB_DIR "${CMAKE_SOURCE_DIR}/addons/text_to_speech/lib/win")
 else()
     set(GODOT_PLUGIN_LIB_DIR "${CMAKE_SOURCE_DIR}/addons/text_to_speech/lib/linux")
+endif()
+
+if(APPLE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        OUTPUT_NAME "godot_text_to_speech.macos.${GODOT_MACOS_ARCH}"
+    )
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -92,7 +120,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 add_dependencies(${PROJECT_NAME} flite_external)
 
-if(WIN32)
+if(APPLE)
+    target_link_libraries(${PROJECT_NAME} PRIVATE godot-cpp m)
+    foreach(FLITE_LIB IN LISTS FLITE_LIBS)
+        target_link_libraries(${PROJECT_NAME} PRIVATE "-Wl,-force_load,${FLITE_LIB}")
+    endforeach()
+elseif(WIN32)
     # Force inclusion of static libs into DLL
     target_link_libraries(${PROJECT_NAME} PRIVATE
         godot-cpp

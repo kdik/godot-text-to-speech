@@ -8,5 +8,9 @@ reloadable = true
 
 linux.debug.x86_64 = "res://addons/text_to_speech/lib/linux/libgodot_text_to_speech.so"
 linux.release.x86_64 = "res://addons/text_to_speech/lib/linux/libgodot_text_to_speech.so"
+macos.debug.x86_64 = "res://addons/text_to_speech/lib/macos/libgodot_text_to_speech.macos.x86_64.dylib"
+macos.release.x86_64 = "res://addons/text_to_speech/lib/macos/libgodot_text_to_speech.macos.x86_64.dylib"
+macos.debug.arm64 = "res://addons/text_to_speech/lib/macos/libgodot_text_to_speech.macos.arm64.dylib"
+macos.release.arm64 = "res://addons/text_to_speech/lib/macos/libgodot_text_to_speech.macos.arm64.dylib"
 windows.debug.x86_64 = "res://addons/text_to_speech/lib/win/libgodot_text_to_speech.dll"
 windows.release.x86_64 = "res://addons/text_to_speech/lib/win/libgodot_text_to_speech.dll"

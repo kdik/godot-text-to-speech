@@ -31,6 +31,37 @@ jobs:
           name: godot-text-to-speech-linux
           path: addons/text_to_speech/lib/linux/libgodot_text_to_speech.so
 
+  build-macos:
+    name: macOS (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-15
+          - arch: x86_64
+            runner: macos-15-intel
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
+
+      - name: Build
+        run: cmake --build build --parallel 2
+
+      - name: Upload plugin library
+        uses: actions/upload-artifact@v7
+        with:
+          name: godot-text-to-speech-macos-${{ matrix.arch }}
+          path: addons/text_to_speech/lib/macos/libgodot_text_to_speech.macos.${{ matrix.arch }}.dylib
+
   build-windows:
     name: Windows
     runs-on: windows-latest
