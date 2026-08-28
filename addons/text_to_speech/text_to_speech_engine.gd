@@ -32,3 +32,7 @@ func say(player, text: String, voice: String, speed: float) -> void:
 	var duration := float(samples) / wav.mix_rate
 
 	await Engine.get_main_loop().create_timer(duration).timeout
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		voice_manager.free()
