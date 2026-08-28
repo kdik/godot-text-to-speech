@@ -5,6 +5,9 @@ var tts: TextToSpeech = TextToSpeech.new()
 var voice_manager = VoiceManager.new()
 var current_voice_path
 
+func _ready() -> void:
+	add_child(voice_manager)
+
 func load_voice(voice_path):
 	voice_manager.ensure_voices_installed()
 	await voice_manager.wait_for_voice(voice_path)
@@ -32,7 +35,3 @@ func say(player, text: String, voice: String, speed: float) -> void:
 	var duration := float(samples) / wav.mix_rate
 
 	await Engine.get_main_loop().create_timer(duration).timeout
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		voice_manager.free()

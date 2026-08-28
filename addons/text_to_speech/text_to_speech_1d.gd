@@ -7,10 +7,7 @@ var text_to_speech_engine : TextToSpeechEngine
 
 func _ready() -> void:
 	text_to_speech_engine = TextToSpeechEngine.new()
+	add_child(text_to_speech_engine)
 
 func say(text, voice = "cmu_us_aew", speed = 1.0) -> void:
 	await text_to_speech_engine.say(self, text, voice, speed)
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		text_to_speech_engine.free()
