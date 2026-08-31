@@ -5,6 +5,9 @@ var tts: TextToSpeech = TextToSpeech.new()
 var voice_manager = VoiceManager.new()
 var current_voice_path
 
+func _ready() -> void:
+	add_child(voice_manager)
+
 func load_voice(voice_path):
 	voice_manager.ensure_voices_installed()
 	await voice_manager.wait_for_voice(voice_path)
